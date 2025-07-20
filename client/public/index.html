@@ -33,52 +33,20 @@
         theme: {
           extend: {
             colors: {
-              // Primary brand colors - modern blue-gray palette
-              'primary': {
-                50: '#f8fafc',
-                100: '#f1f5f9',
-                500: '#64748b',
-                600: '#475569',
-                700: '#334155',
-                800: '#1e293b',
-                900: '#0f172a'
-              },
-              // Accent colors - vibrant and modern
-              'accent': {
-                50: '#f0f9ff',
-                100: '#e0f2fe',
-                500: '#0ea5e9',
-                600: '#0284c7',
-                700: '#0369a1'
-              },
-              // Success - emerald
-              'success': {
-                50: '#ecfdf5',
-                500: '#10b981',
-                600: '#059669',
-                700: '#047857'
-              },
-              // Warning - amber
-              'warning': {
-                50: '#fffbeb',
-                500: '#f59e0b',
-                600: '#d97706'
-              },
-              // Danger - red
-              'danger': {
-                50: '#fef2f2',
-                500: '#ef4444',
-                600: '#dc2626'
-              },
-              // Custom semantic colors
-              'background': '#ffffff',
-              'surface': '#ffffff',
-              'surface-dark': '#1e293b',
-              'text-primary': '#0f172a',
-              'text-secondary': '#64748b',
-              'text-muted': '#94a3b8',
-              'border': '#e2e8f0',
-              'border-dark': '#334155'
+              'primary': '#1a1a2e',     // Deep navy blue - vibrant dark
+              'secondary': '#16213e',   // Rich dark blue
+              'accent': '#00d4ff',      // Electric cyan - very vibrant
+              'accent-hover': '#00b8e6', // Bright cyan hover
+              'success': '#00ff88',     // Neon green - very vibrant
+              'warning': '#ff6b35',     // Vibrant orange
+              'danger': '#ff3366',      // Bright red
+              'background': '#ffffff',  // Pure white background
+              'surface': '#ffffff',     // Pure white for cards
+              'text-primary': '#1a1a2e', // Dark navy for text
+              'text-secondary': '#4a5568', // Medium gray for secondary text
+              'border': '#e2e8f0',      // Light border
+              'gradient-start': '#667eea', // Purple gradient start
+              'gradient-end': '#764ba2'    // Purple gradient end
             },
             animation: {
               'fade-in': 'fadeIn 0.6s ease-out',
@@ -86,9 +54,7 @@
               'slide-in-right': 'slideInRight 0.4s ease-out',
               'bounce-in': 'bounceIn 0.8s ease-out',
               'pulse-slow': 'pulse 3s infinite',
-              'float': 'float 3s ease-in-out infinite',
-              'scale-in': 'scaleIn 0.3s ease-out',
-              'glow': 'glow 2s ease-in-out infinite alternate'
+              'float': 'float 3s ease-in-out infinite'
             },
             keyframes: {
               fadeIn: {
@@ -112,37 +78,12 @@
               float: {
                 '0%, 100%': { transform: 'translateY(0px)' },
                 '50%': { transform: 'translateY(-10px)' }
-              },
-              scaleIn: {
-                '0%': { transform: 'scale(0.9)', opacity: '0' },
-                '100%': { transform: 'scale(1)', opacity: '1' }
-              },
-              glow: {
-                '0%': { boxShadow: '0 0 20px rgba(14, 165, 233, 0.1)' },
-                '100%': { boxShadow: '0 0 30px rgba(14, 165, 233, 0.2)' }
               }
             },
             boxShadow: {
-              'card': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-              'card-hover': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-              'card-focus': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
               'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)',
               'medium': '0 4px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-              'strong': '0 10px 40px -10px rgba(0, 0, 0, 0.15)',
-              'glow': '0 0 20px rgba(14, 165, 233, 0.15)'
-            },
-            borderRadius: {
-              'card': '12px',
-              'button': '8px'
-            },
-            fontSize: {
-              'xs': ['0.75rem', { lineHeight: '1rem' }],
-              'sm': ['0.875rem', { lineHeight: '1.25rem' }],
-              'base': ['1rem', { lineHeight: '1.5rem' }],
-              'lg': ['1.125rem', { lineHeight: '1.75rem' }],
-              'xl': ['1.25rem', { lineHeight: '1.75rem' }],
-              '2xl': ['1.5rem', { lineHeight: '2rem' }],
-              '3xl': ['1.875rem', { lineHeight: '2.25rem' }]
+              'strong': '0 10px 40px -10px rgba(0, 0, 0, 0.15)'
             }
           }
         }
