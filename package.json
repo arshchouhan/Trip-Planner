@@ -1,0 +1,26 @@
+{
+  "name": "trip-planner",
+  "version": "1.0.0",
+  "description": "A fullstack trip planning application using graph algorithms",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd server && npm start",
+    "client": "cd client && npm start",
+    "install-all": "npm install && npm run install-server && npm run install-client",
+    "install-server": "cd server && npm install",
+    "install-client": "cd client && npm install",
+    "dev": "concurrently \"cd server && npm run dev\" \"cd client && npm start\""
+  },
+  "keywords": [
+    "react",
+    "express",
+    "graph-algorithms",
+    "trip-planner"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.0.1"
+  }
+}
