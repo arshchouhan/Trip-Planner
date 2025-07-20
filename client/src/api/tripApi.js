@@ -27,15 +27,15 @@ export const planTrip = async (tripData) => {
     
     // More detailed error handling
     if (error.code === 'ECONNABORTED') {
-      throw { success: false, message: 'Request timed out. Please try again.' };
+      throw new Error('The request took too long to complete. Please try again.');
     } else if (!error.response) {
-      throw { success: false, message: 'Network error occurred. Please check your internet connection.' };
+      throw new Error('Network error: Could not connect to the server. Please check your internet connection.');
     } else if (error.response.status === 500) {
-      throw { success: false, message: 'Server error. The team has been notified.' };
+      throw new Error('Server error. The team has been notified.');
     } else if (error.response.data && error.response.data.message) {
-      throw error.response.data;
+      throw new Error(`Server error: ${error.response.data.message || 'Please try again.'}`);
     } else {
-      throw { success: false, message: 'An unexpected error occurred. Please try again later.' };
+      throw new Error('An unexpected error occurred. Please try again later.');
     }
   }
 };
