@@ -86,7 +86,7 @@ function App() {
             >
               <div className="bg-surface rounded-xl shadow-strong overflow-hidden border border-border animate-slide-in-up">
                 <div className="p-6 sm:p-10">
-                  <h2 className="text-2xl font-bold text-text-primary mb-6 animate-fade-in">Plan Your Perfect Trip</h2>
+                  <h2 className="text-2xl font-bold text-text-primary mb-6">Plan Your Perfect Trip</h2>
                   <TripForm onSubmit={handleSubmit} isLoading={isLoading} />
                   
                   <AnimatePresence>

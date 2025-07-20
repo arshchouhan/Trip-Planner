@@ -30,7 +30,7 @@ const FloatingLabelInput = ({ id, name, type, value, onChange, label, required, 
           : 'left-3 top-3 text-text-secondary'
         } pointer-events-none`}
       >
-        {label}{required && <span className="text-red-500 ml-1">*</span>}
+        {label}{required && <span className="text-danger ml-1">*</span>}
       </label>
     </div>
   );
