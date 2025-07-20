@@ -208,7 +208,7 @@ const LocationSearch = ({ onLocationSelect, mapRef }) => {
         <input
           ref={inputRef}
           type="text"
-          className="w-full p-3 pr-10 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full p-3 pr-10 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-accent focus:border-accent"
           placeholder="Search for a location..."
           value={query}
           onChange={handleInputChange}
@@ -220,7 +220,7 @@ const LocationSearch = ({ onLocationSelect, mapRef }) => {
         />
         {loading && (
           <div className="absolute right-3 top-3">
-            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-accent"></div>
           </div>
         )}
       </div>
@@ -236,7 +236,7 @@ const LocationSearch = ({ onLocationSelect, mapRef }) => {
               {suggestions.map((suggestion, index) => (
                 <li 
                   key={index} 
-                  className="p-3 hover:bg-gray-100 cursor-pointer border-b border-gray-100 last:border-b-0"
+                  className="p-3 hover:bg-accent/10 cursor-pointer border-b border-gray-100 last:border-b-0"
                   onClick={() => handleSelectSuggestion(suggestion)}
                 >
                   <div className="font-medium">

@@ -21,12 +21,12 @@ const FloatingLabelInput = ({ id, name, type, value, onChange, label, required, 
         placeholder={isFocused ? placeholder : ''}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
-        className="peer w-full px-3 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition-colors bg-white/70 backdrop-blur-sm"
+        className="peer w-full px-3 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-accent transition-colors bg-white/70 backdrop-blur-sm"
       />
       <label 
         htmlFor={id}
         className={`absolute transition-all duration-200 ${isOccupied 
-          ? 'transform -translate-y-[calc(100%+0.15rem)] left-3 text-xs font-semibold text-indigo-600 bg-white px-1'
+          ? 'transform -translate-y-[calc(100%+0.15rem)] left-3 text-xs font-semibold text-accent bg-white px-1'
           : 'left-3 top-3 text-gray-500'
         } pointer-events-none`}
       >
@@ -77,7 +77,7 @@ const TripForm = ({ onSubmit, isLoading }) => {
       className="w-full"
     >
       <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-primary mb-2">
           Destination <span className="text-red-500">*</span>
         </label>
         <LocationSearch 
@@ -94,14 +94,14 @@ const TripForm = ({ onSubmit, isLoading }) => {
       </div>
       
       <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-primary mb-2">
           Number of Days <span className="text-red-500">*</span>
         </label>
         <div className="flex items-center">
           <button 
             type="button" 
             onClick={() => setFormData(prev => ({ ...prev, days: Math.max(1, prev.days - 1) }))} 
-            className="h-10 w-10 rounded-l-lg bg-indigo-100 hover:bg-indigo-200 flex items-center justify-center text-indigo-800 transition-colors"
+            className="h-10 w-10 rounded-l-lg bg-accent/20 hover:bg-accent/30 flex items-center justify-center text-accent transition-colors"
           >
             –
           </button>
@@ -114,12 +114,12 @@ const TripForm = ({ onSubmit, isLoading }) => {
             min="1"
             max="14"
             required
-            className="h-10 w-20 text-center border-y-2 border-gray-300 focus:outline-none focus:border-indigo-500"
+            className="h-10 w-20 text-center border-y-2 border-gray-300 focus:outline-none focus:border-accent"
           />
           <button 
             type="button" 
             onClick={() => setFormData(prev => ({ ...prev, days: Math.min(14, prev.days + 1) }))} 
-            className="h-10 w-10 rounded-r-lg bg-indigo-100 hover:bg-indigo-200 flex items-center justify-center text-indigo-800 transition-colors"
+            className="h-10 w-10 rounded-r-lg bg-accent/20 hover:bg-accent/30 flex items-center justify-center text-accent transition-colors"
           >
             +
           </button>
@@ -128,7 +128,7 @@ const TripForm = ({ onSubmit, isLoading }) => {
       </div>
       
       <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-primary mb-2">
           Trip Type <span className="text-red-500">*</span>
         </label>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
@@ -138,8 +138,8 @@ const TripForm = ({ onSubmit, isLoading }) => {
               type="button"
               onClick={() => setFormData(prev => ({ ...prev, tripType: type.value }))}
               className={`p-2 rounded-lg border-2 transition-all ${formData.tripType === type.value 
-                ? 'border-indigo-500 bg-indigo-50 text-indigo-800' 
-                : 'border-gray-200 hover:border-indigo-200 hover:bg-indigo-50'}`}
+                ? 'border-accent bg-accent/10 text-accent' 
+                : 'border-gray-200 hover:border-accent hover:bg-accent/10'}`}
             >
               <div className="flex flex-col items-center justify-center">
                 <span className="text-2xl mb-1">{type.icon}</span>
@@ -174,8 +174,8 @@ const TripForm = ({ onSubmit, isLoading }) => {
         type="submit"
         disabled={isLoading}
         className={`w-full py-3 px-6 rounded-lg text-white font-medium mt-6
-          ${ isLoading ? 'bg-gradient-to-r from-indigo-400 to-blue-400' : 'bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700'}
-          transition-all duration-300 transform hover:scale-[1.01] shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+          ${ isLoading ? 'bg-accent/70' : 'bg-accent hover:bg-accent-hover'}
+          transition-all duration-300 transform hover:scale-[1.01] shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent`}
         whileHover={{ scale: isLoading ? 1 : 1.01 }}
         whileTap={{ scale: isLoading ? 1 : 0.99 }}
       >

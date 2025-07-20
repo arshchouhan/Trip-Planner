@@ -47,15 +47,15 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <header className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white shadow-lg">
+    <div className="min-h-screen bg-secondary text-primary">
+      <header className="bg-primary text-secondary shadow-lg">
         <div className="container mx-auto py-6 px-4 sm:px-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-200">
+              <h1 className="text-3xl font-bold">
                 Trip Planner
               </h1>
-              <p className="text-blue-100">Optimize your travel with graph algorithms</p>
+              <p className="text-gray-300">Optimize your travel with graph algorithms</p>
             </div>
             {step === 2 && (
               <motion.button
@@ -63,7 +63,7 @@ function App() {
                 animate={{ opacity: 1, scale: 1 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-4 py-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-md text-white font-medium transition-all"
+                className="px-4 py-2 bg-accent hover:bg-accent-hover rounded-md text-white font-medium transition-all"
                 onClick={resetPlanner}
               >
                 Plan New Trip
@@ -84,9 +84,9 @@ function App() {
               transition={{ duration: 0.3 }}
               className="max-w-4xl mx-auto"
             >
-              <div className="bg-white/80 backdrop-blur-md rounded-xl shadow-xl overflow-hidden border border-gray-100">
+              <div className="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100">
                 <div className="p-6 sm:p-10">
-                  <h2 className="text-2xl font-bold text-gray-800 mb-6">Plan Your Perfect Trip</h2>
+                  <h2 className="text-2xl font-bold text-primary mb-6">Plan Your Perfect Trip</h2>
                   <TripForm onSubmit={handleSubmit} isLoading={isLoading} />
                   
                   <AnimatePresence>
@@ -113,33 +113,33 @@ function App() {
                   </AnimatePresence>
                 </div>
                 
-                <div className="bg-gradient-to-r from-blue-500 to-indigo-600 px-6 py-4 sm:px-10">
+                <div className="bg-accent px-6 py-4 sm:px-10">
                   <p className="text-white text-sm">Our algorithm uses graph theory to create the most efficient travel itinerary</p>
                 </div>
               </div>
               
               <div className="mt-8 bg-white/80 backdrop-blur-md rounded-xl shadow-xl p-6 sm:p-8 border border-gray-100">
-                <h3 className="text-xl font-semibold text-gray-800 mb-4">How It Works</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                  <div className="flex flex-col items-center text-center p-4 rounded-lg bg-blue-50 border border-blue-100">
-                    <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center mb-4">
-                      <span className="text-blue-600 font-bold">1</span>
+                <h3 className="text-xl font-semibold text-primary mb-4">How It Works</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+                  <div className="p-4 rounded-lg bg-secondary border border-gray-200">
+                    <div className="h-12 w-12 mx-auto rounded-full bg-accent/20 flex items-center justify-center mb-4">
+                      <span className="text-accent font-bold">1</span>
                     </div>
-                    <h4 className="font-medium text-gray-900 mb-2">Input Your Preferences</h4>
+                    <h4 className="font-medium text-primary mb-2">Input Your Preferences</h4>
                     <p className="text-sm text-gray-600">Tell us your destination, duration, and trip type</p>
                   </div>
-                  <div className="flex flex-col items-center text-center p-4 rounded-lg bg-indigo-50 border border-indigo-100">
-                    <div className="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center mb-4">
-                      <span className="text-indigo-600 font-bold">2</span>
+                  <div className="p-4 rounded-lg bg-secondary border border-gray-200">
+                    <div className="h-12 w-12 mx-auto rounded-full bg-accent/20 flex items-center justify-center mb-4">
+                      <span className="text-accent font-bold">2</span>
                     </div>
-                    <h4 className="font-medium text-gray-900 mb-2">Algorithm Optimizes</h4>
+                    <h4 className="font-medium text-primary mb-2">Algorithm Optimizes</h4>
                     <p className="text-sm text-gray-600">Our graph algorithm finds the optimal route</p>
                   </div>
-                  <div className="flex flex-col items-center text-center p-4 rounded-lg bg-violet-50 border border-violet-100">
-                    <div className="h-12 w-12 rounded-full bg-violet-100 flex items-center justify-center mb-4">
-                      <span className="text-violet-600 font-bold">3</span>
+                  <div className="p-4 rounded-lg bg-secondary border border-gray-200">
+                    <div className="h-12 w-12 mx-auto rounded-full bg-accent/20 flex items-center justify-center mb-4">
+                      <span className="text-accent font-bold">3</span>
                     </div>
-                    <h4 className="font-medium text-gray-900 mb-2">Get Your Itinerary</h4>
+                    <h4 className="font-medium text-primary mb-2">Get Your Itinerary</h4>
                     <p className="text-sm text-gray-600">Receive a day-by-day optimized travel plan</p>
                   </div>
                 </div>
@@ -154,13 +154,13 @@ function App() {
               transition={{ duration: 0.3 }}
               className="max-w-6xl mx-auto"
             >
-              <div className="bg-white/80 backdrop-blur-md rounded-xl shadow-xl overflow-hidden border border-gray-100">
+              <div className="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100">
                 <div className="p-6 sm:p-10">
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-bold text-gray-800">
+                    <h2 className="text-2xl font-bold text-primary">
                       Your Trip to {tripData.destination}
                     </h2>
-                    <span className="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-sm font-medium">
+                    <span className="px-3 py-1 bg-accent/20 text-accent rounded-full text-sm font-medium">
                       {tripData.tripType} Trip • {tripData.days} Days
                     </span>
                   </div>
@@ -178,7 +178,7 @@ function App() {
         </AnimatePresence>
       </main>
       
-      <footer className="bg-gray-800 text-gray-300 py-6 mt-12">
+      <footer className="bg-primary text-gray-300 py-6 mt-12">
         <div className="container mx-auto px-4 text-center">
           <p>Trip Planner - Powered by Graph Algorithms</p>
           <p className="text-sm mt-2">© {new Date().getFullYear()} - Data Structures and Algorithms Project</p>
