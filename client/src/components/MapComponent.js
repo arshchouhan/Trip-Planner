@@ -87,7 +87,7 @@ const MapComponent = ({ onLocationSelect }) => {
   return (
     <div className="flex flex-col h-full">
       {/* Search bar */}
-      <div className="p-4 bg-white shadow-md z-10">
+      <div className="p-4 bg-surface shadow-medium z-10 border-b border-border">
         <LocationSearch 
           onLocationSelect={handleLocationSelect} 
           mapRef={mapRef}
@@ -101,15 +101,15 @@ const MapComponent = ({ onLocationSelect }) => {
         style={{ minHeight: '400px', height: '70vh' }}
       >
         {!mapLoaded && (
-          <div className="flex items-center justify-center h-full bg-gray-100">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+          <div className="flex items-center justify-center h-full bg-background">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent"></div>
           </div>
         )}
       </div>
 
-      <div className="p-4 bg-white border-t">
-        <h3 className="text-lg font-semibold mb-2">Instructions</h3>
-        <ul className="text-sm text-gray-600">
+      <div className="p-4 bg-surface border-t border-border shadow-soft">
+        <h3 className="text-lg font-semibold mb-2 text-text-primary">Instructions</h3>
+        <ul className="text-sm text-text-secondary">
           <li className="mb-1">• Search for a destination in the search box above</li>
           <li className="mb-1">• Select from the suggestions that appear</li>
           <li className="mb-1">• A marker will be placed on the map for your selected location</li>

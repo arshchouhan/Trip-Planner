@@ -48,14 +48,19 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background text-text-primary animate-fade-in">
-      <header className="bg-primary text-white shadow-strong">
-        <div className="container mx-auto py-6 px-4 sm:px-6">
+      <header className="bg-gradient-to-r from-primary via-secondary to-primary text-white shadow-strong">
+        <div className="container mx-auto py-4 px-4 sm:px-6">
           <div className="flex items-center justify-between">
-            <div className="animate-slide-in-right">
-              <h1 className="text-3xl font-bold text-white">
-                Trip Planner
-              </h1>
-              <p className="text-gray-300">Optimize your travel with graph algorithms</p>
+            <div className="flex items-center space-x-3 animate-slide-in-right">
+              <div className="h-12 w-12 rounded-full bg-accent/20 backdrop-blur-sm flex items-center justify-center shadow-medium">
+                <span className="text-2xl">✈️</span>
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-white">
+                  Trip Planner
+                </h1>
+                <p className="text-white/80">Optimize your travel with graph algorithms</p>
+              </div>
             </div>
             {step === 2 && (
               <motion.button
@@ -63,10 +68,11 @@ function App() {
                 animate={{ opacity: 1, scale: 1 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-4 py-2 bg-accent hover:bg-accent-hover rounded-md text-white font-medium transition-all"
+                className="px-5 py-2.5 bg-gradient-to-r from-accent to-accent-hover hover:from-accent-hover hover:to-accent rounded-lg text-white font-medium transition-all shadow-medium flex items-center space-x-2"
                 onClick={resetPlanner}
               >
-                Plan New Trip
+                <span className="text-sm">🔄</span>
+                <span>Plan New Trip</span>
               </motion.button>
             )}
           </div>

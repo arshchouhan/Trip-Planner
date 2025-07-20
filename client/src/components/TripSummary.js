@@ -64,41 +64,41 @@ const TripSummary = ({ itinerary, destination, tripType, days }) => {
     >
       <div className="p-0 sm:p-4 rounded-xl">
         {/* Trip Statistics */}
-        <div className="mb-6 px-4 py-5 bg-gradient-to-br from-primary to-accent backdrop-blur-sm text-white rounded-xl shadow-xl">
+        <div className="mb-6 px-4 py-5 bg-gradient-to-br from-secondary to-accent backdrop-blur-sm text-white rounded-xl shadow-strong">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <h3 className="text-2xl font-bold mb-1 flex items-center">
                 {icons[tripType.toLowerCase()]} <span className="ml-2">Your {tripType} Trip to {destination}</span>
               </h3>
-              <p className="text-gray-200 font-light">{days}-day optimized itinerary</p>
+              <p className="text-white font-light">{days}-day optimized itinerary</p>
             </div>
             
             <div className="flex flex-wrap gap-3">
-              <div className="bg-white/20 backdrop-blur-md rounded-lg px-4 py-2 text-center flex items-center">
+              <div className="bg-white/30 backdrop-blur-md rounded-lg px-4 py-2 text-center flex items-center shadow-soft">
                 <span className="mr-2 text-xl">📍</span>
                 <div>
-                  <p className="text-xs text-gray-200">Destination</p>
+                  <p className="text-xs text-white">Destination</p>
                   <p className="font-medium">{destination}</p>
                 </div>
               </div>
-              <div className="bg-white/20 backdrop-blur-md rounded-lg px-4 py-2 text-center flex items-center">
+              <div className="bg-white/30 backdrop-blur-md rounded-lg px-4 py-2 text-center flex items-center shadow-soft">
                 <span className="mr-2 text-xl">⏱️</span>
                 <div>
-                  <p className="text-xs text-gray-200">Visit Time</p>
+                  <p className="text-xs text-white">Visit Time</p>
                   <p className="font-medium">{tripStats.totalVisitTime}</p>
                 </div>
               </div>
-              <div className="bg-white/20 backdrop-blur-md rounded-lg px-4 py-2 text-center flex items-center">
+              <div className="bg-white/30 backdrop-blur-md rounded-lg px-4 py-2 text-center flex items-center shadow-soft">
                 <span className="mr-2 text-xl">🚗</span>
                 <div>
-                  <p className="text-xs text-gray-200">Travel Time</p>
+                  <p className="text-xs text-white">Travel Time</p>
                   <p className="font-medium">{tripStats.totalTravelTime}</p>
                 </div>
               </div>
-              <div className="bg-white/20 backdrop-blur-md rounded-lg px-4 py-2 text-center flex items-center">
+              <div className="bg-white/30 backdrop-blur-md rounded-lg px-4 py-2 text-center flex items-center shadow-soft">
                 <span className="mr-2 text-xl">{icons.calendar}</span>
                 <div>
-                  <p className="text-xs text-gray-200">Total Time</p>
+                  <p className="text-xs text-white">Total Time</p>
                   <p className="font-medium">{tripStats.totalTime}</p>
                 </div>
               </div>
@@ -130,7 +130,7 @@ const TripSummary = ({ itinerary, destination, tripType, days }) => {
             ))}
           </div>
           {/* Progress bar */}
-          <div className="relative h-1 bg-gray-100 rounded-full mt-2">
+          <div className="relative h-1.5 bg-gray-200 rounded-full mt-2">
             <motion.div 
               className="absolute top-0 left-0 h-full bg-accent rounded-full"
               initial={{ width: '0%' }}
@@ -151,16 +151,16 @@ const TripSummary = ({ itinerary, destination, tripType, days }) => {
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0, transition: { duration: 0.2 } }}
                   transition={{ duration: 0.3 }}
-                  className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-gray-100 overflow-hidden"
+                  className="bg-white/90 backdrop-blur-sm rounded-xl shadow-medium border border-border overflow-hidden"
                 >
-                  <div onClick={() => toggleDay(dayIndex)} className={`flex justify-between items-center p-4 cursor-pointer rounded-t-lg transition-colors ${ expandedDay === dayIndex ? 'bg-accent/10 text-accent-dark' : 'bg-white hover:bg-secondary' }`}>
+                  <div onClick={() => toggleDay(dayIndex)} className={`flex justify-between items-center p-4 cursor-pointer rounded-t-lg transition-colors ${ expandedDay === dayIndex ? 'bg-accent/20 text-accent' : 'bg-white hover:bg-accent/5' }`}>
                     <h4 className="font-semibold flex items-center">
                       <span className="w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center mr-3">
                         {dayIndex + 1}
                       </span>
                       Day {dayIndex + 1}
                     </h4>
-                    <div className="text-xs px-2 py-1 bg-accent/20 text-accent-dark rounded-full">
+                    <div className="text-xs px-2 py-1 bg-accent/20 text-accent font-medium rounded-full">
                       {day.length} {day.length === 1 ? 'Location' : 'Locations'}
                     </div>
                   </div>
@@ -175,12 +175,12 @@ const TripSummary = ({ itinerary, destination, tripType, days }) => {
                       >
                         <div className="flex justify-between items-start">
                           <div className="flex items-start">
-                            <div className="h-10 w-10 bg-gradient-to-br from-primary to-accent text-white rounded-full flex items-center justify-center text-sm font-medium mr-3 shadow-sm">
+                            <div className="h-10 w-10 bg-gradient-to-br from-gradient-start to-gradient-end text-white rounded-full flex items-center justify-center text-sm font-medium mr-3 shadow-medium">
                               {placeIndex + 1}
                             </div>
                             <div>
-                              <h5 className="font-medium text-gray-900">{place.name}</h5>
-                              <div className="text-sm text-gray-500 mt-2 space-y-1">
+                              <h5 className="font-medium text-text-primary">{place.name}</h5>
+                              <div className="text-sm text-text-secondary mt-2 space-y-1">
                                 <p className="flex items-center">
                                   {icons.visit} <span className="ml-2">Visit duration: {formatTime(place.visitDuration)}</span>
                                 </p>
@@ -205,12 +205,12 @@ const TripSummary = ({ itinerary, destination, tripType, days }) => {
 
                         {/* Show travel time to next location */}
                         {place.travelTimeToNext && placeIndex < day.length - 1 && (
-                          <div className="mt-3 ml-12 flex items-center text-sm text-gray-500">
+                          <div className="mt-3 ml-12 flex items-center text-sm text-text-secondary">
                             <div className="mr-2">{icons.travel}</div>
                             <div className="flex-1">
                               <p className="font-medium">Travel to next location: {formatTime(place.travelTimeToNext)}</p>
-                              <div className="relative w-full h-0.5 bg-gray-100 my-2">
-                                <div className="absolute top-0 left-0 h-full bg-accent/20" style={{ width: '100%' }}></div>
+                              <div className="relative w-full h-0.5 bg-border my-2">
+                                <div className="absolute top-0 left-0 h-full bg-accent/40" style={{ width: '100%' }}></div>
                               </div>
                             </div>
                           </div>
@@ -219,7 +219,7 @@ const TripSummary = ({ itinerary, destination, tripType, days }) => {
                     ))}
 
                     {day.length === 0 && (
-                      <div className="p-6 text-center text-gray-500">
+                      <div className="p-6 text-center text-text-secondary">
                         <span className="text-2xl block mb-2">🏖️</span>
                         <p>Free day! No activities scheduled - explore on your own.</p>
                       </div>
@@ -233,15 +233,15 @@ const TripSummary = ({ itinerary, destination, tripType, days }) => {
 
         {/* Trip Notes */}
         <motion.div 
-          className="mt-6 p-5 bg-secondary border border-gray-200 rounded-xl shadow-sm"
+          className="mt-6 p-5 bg-primary/5 border border-border rounded-xl shadow-medium"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2 }}
         >
-          <h4 className="font-semibold text-primary mb-3 flex items-center">
+          <h4 className="font-semibold text-text-primary mb-3 flex items-center">
             <span className="text-lg mr-2">💡</span> Trip Notes
           </h4>
-          <ul className="text-sm text-gray-700 space-y-2 ml-7">
+          <ul className="text-sm text-text-secondary space-y-2 ml-7">
             <li className="relative">             
               <span className="absolute -left-7 top-0">🗺️</span>
               This itinerary has been optimized to minimize travel time between locations.

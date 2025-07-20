@@ -208,7 +208,7 @@ const LocationSearch = ({ onLocationSelect, mapRef }) => {
         <input
           ref={inputRef}
           type="text"
-          className="w-full p-3 pr-10 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-accent focus:border-accent"
+          className="w-full p-3 pr-10 border-2 border-border rounded-lg shadow-soft focus:ring-2 focus:ring-accent focus:border-accent bg-surface/70 backdrop-blur-sm hover:border-accent/50 transition-colors"
           placeholder="Search for a location..."
           value={query}
           onChange={handleInputChange}
@@ -220,7 +220,7 @@ const LocationSearch = ({ onLocationSelect, mapRef }) => {
         />
         {loading && (
           <div className="absolute right-3 top-3">
-            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-accent"></div>
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-accent shadow-sm"></div>
           </div>
         )}
       </div>
@@ -229,27 +229,27 @@ const LocationSearch = ({ onLocationSelect, mapRef }) => {
       {showSuggestions && (
         <div 
           ref={suggestionsRef}
-          className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+          className="absolute z-10 w-full mt-1 bg-surface border border-border rounded-md shadow-medium max-h-60 overflow-auto"
         >
           {suggestions.length > 0 ? (
             <ul>
               {suggestions.map((suggestion, index) => (
                 <li 
                   key={index} 
-                  className="p-3 hover:bg-accent/10 cursor-pointer border-b border-gray-100 last:border-b-0"
+                  className="p-3 hover:bg-accent/10 cursor-pointer border-b border-border last:border-b-0 transition-colors"
                   onClick={() => handleSelectSuggestion(suggestion)}
                 >
-                  <div className="font-medium">
+                  <div className="font-medium text-text-primary">
                     {suggestion.name.split(',')[0]}
                   </div>
-                  <div className="text-xs text-gray-500 truncate">
+                  <div className="text-xs text-text-secondary truncate">
                     {suggestion.name}
                   </div>
                 </li>
               ))}
             </ul>
           ) : (
-            <div className="p-3 text-gray-500 text-center">
+            <div className="p-3 text-text-secondary text-center">
               {loading ? 'Searching...' : 'No results found'}
             </div>
           )}
