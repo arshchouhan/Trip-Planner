@@ -47,12 +47,12 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-secondary text-primary">
-      <header className="bg-primary text-secondary shadow-lg">
+    <div className="min-h-screen bg-background text-text-primary animate-fade-in">
+      <header className="bg-primary text-white shadow-strong">
         <div className="container mx-auto py-6 px-4 sm:px-6">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold">
+            <div className="animate-slide-in-right">
+              <h1 className="text-3xl font-bold text-white">
                 Trip Planner
               </h1>
               <p className="text-gray-300">Optimize your travel with graph algorithms</p>
@@ -84,9 +84,9 @@ function App() {
               transition={{ duration: 0.3 }}
               className="max-w-4xl mx-auto"
             >
-              <div className="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100">
+              <div className="bg-surface rounded-xl shadow-strong overflow-hidden border border-border animate-slide-in-up">
                 <div className="p-6 sm:p-10">
-                  <h2 className="text-2xl font-bold text-primary mb-6">Plan Your Perfect Trip</h2>
+                  <h2 className="text-2xl font-bold text-text-primary mb-6 animate-fade-in">Plan Your Perfect Trip</h2>
                   <TripForm onSubmit={handleSubmit} isLoading={isLoading} />
                   
                   <AnimatePresence>
@@ -95,7 +95,7 @@ function App() {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="mt-4 bg-red-50 border-l-4 border-red-500 p-4 rounded-md" 
+                        className="mt-4 bg-red-50 border-l-4 border-danger p-4 rounded-md animate-bounce-in" 
                         role="alert"
                       >
                         <div className="flex">
@@ -118,29 +118,29 @@ function App() {
                 </div>
               </div>
               
-              <div className="mt-8 bg-white/80 backdrop-blur-md rounded-xl shadow-xl p-6 sm:p-8 border border-gray-100">
-                <h3 className="text-xl font-semibold text-primary mb-4">How It Works</h3>
+              <div className="mt-8 bg-surface/90 backdrop-blur-md rounded-xl shadow-medium p-6 sm:p-8 border border-border animate-slide-in-up">
+                <h3 className="text-xl font-semibold text-text-primary mb-4">How It Works</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
-                  <div className="p-4 rounded-lg bg-secondary border border-gray-200">
-                    <div className="h-12 w-12 mx-auto rounded-full bg-accent/20 flex items-center justify-center mb-4">
+                  <div className="p-4 rounded-lg bg-background border border-border hover:shadow-soft transition-all duration-300 animate-fade-in">
+                    <div className="h-12 w-12 mx-auto rounded-full bg-accent/20 flex items-center justify-center mb-4 animate-float">
                       <span className="text-accent font-bold">1</span>
                     </div>
-                    <h4 className="font-medium text-primary mb-2">Input Your Preferences</h4>
-                    <p className="text-sm text-gray-600">Tell us your destination, duration, and trip type</p>
+                    <h4 className="font-medium text-text-primary mb-2">Input Your Preferences</h4>
+                    <p className="text-sm text-text-secondary">Tell us your destination, duration, and trip type</p>
                   </div>
-                  <div className="p-4 rounded-lg bg-secondary border border-gray-200">
-                    <div className="h-12 w-12 mx-auto rounded-full bg-accent/20 flex items-center justify-center mb-4">
+                  <div className="p-4 rounded-lg bg-background border border-border hover:shadow-soft transition-all duration-300 animate-fade-in" style={{animationDelay: '0.2s'}}>
+                    <div className="h-12 w-12 mx-auto rounded-full bg-accent/20 flex items-center justify-center mb-4 animate-float" style={{animationDelay: '1s'}}>
                       <span className="text-accent font-bold">2</span>
                     </div>
-                    <h4 className="font-medium text-primary mb-2">Algorithm Optimizes</h4>
-                    <p className="text-sm text-gray-600">Our graph algorithm finds the optimal route</p>
+                    <h4 className="font-medium text-text-primary mb-2">Algorithm Optimizes</h4>
+                    <p className="text-sm text-text-secondary">Our graph algorithm finds the optimal route</p>
                   </div>
-                  <div className="p-4 rounded-lg bg-secondary border border-gray-200">
-                    <div className="h-12 w-12 mx-auto rounded-full bg-accent/20 flex items-center justify-center mb-4">
+                  <div className="p-4 rounded-lg bg-background border border-border hover:shadow-soft transition-all duration-300 animate-fade-in" style={{animationDelay: '0.4s'}}>
+                    <div className="h-12 w-12 mx-auto rounded-full bg-accent/20 flex items-center justify-center mb-4 animate-float" style={{animationDelay: '2s'}}>
                       <span className="text-accent font-bold">3</span>
                     </div>
-                    <h4 className="font-medium text-primary mb-2">Get Your Itinerary</h4>
-                    <p className="text-sm text-gray-600">Receive a day-by-day optimized travel plan</p>
+                    <h4 className="font-medium text-text-primary mb-2">Get Your Itinerary</h4>
+                    <p className="text-sm text-text-secondary">Receive a day-by-day optimized travel plan</p>
                   </div>
                 </div>
               </div>
@@ -154,10 +154,10 @@ function App() {
               transition={{ duration: 0.3 }}
               className="max-w-6xl mx-auto"
             >
-              <div className="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100">
+              <div className="bg-surface rounded-xl shadow-strong overflow-hidden border border-border animate-slide-in-up">
                 <div className="p-6 sm:p-10">
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-bold text-primary">
+                    <h2 className="text-2xl font-bold text-text-primary">
                       Your Trip to {tripData.destination}
                     </h2>
                     <span className="px-3 py-1 bg-accent/20 text-accent rounded-full text-sm font-medium">

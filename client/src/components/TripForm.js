@@ -21,13 +21,13 @@ const FloatingLabelInput = ({ id, name, type, value, onChange, label, required, 
         placeholder={isFocused ? placeholder : ''}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
-        className="peer w-full px-3 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-accent transition-colors bg-white/70 backdrop-blur-sm"
+        className="peer w-full px-3 py-3 border-2 border-border rounded-lg focus:outline-none focus:border-accent transition-colors bg-surface/70 backdrop-blur-sm hover:border-accent/50"
       />
       <label 
         htmlFor={id}
         className={`absolute transition-all duration-200 ${isOccupied 
-          ? 'transform -translate-y-[calc(100%+0.15rem)] left-3 text-xs font-semibold text-accent bg-white px-1'
-          : 'left-3 top-3 text-gray-500'
+          ? 'transform -translate-y-[calc(100%+0.15rem)] left-3 text-xs font-semibold text-accent bg-surface px-1'
+          : 'left-3 top-3 text-text-secondary'
         } pointer-events-none`}
       >
         {label}{required && <span className="text-red-500 ml-1">*</span>}
@@ -77,8 +77,8 @@ const TripForm = ({ onSubmit, isLoading }) => {
       className="w-full"
     >
       <div className="mb-6">
-        <label className="block text-sm font-medium text-primary mb-2">
-          Destination <span className="text-red-500">*</span>
+        <label className="block text-sm font-medium text-text-primary mb-2">
+          Destination <span className="text-danger">*</span>
         </label>
         <LocationSearch 
           onLocationSelect={(location) => {
@@ -94,8 +94,8 @@ const TripForm = ({ onSubmit, isLoading }) => {
       </div>
       
       <div className="mb-6">
-        <label className="block text-sm font-medium text-primary mb-2">
-          Number of Days <span className="text-red-500">*</span>
+        <label className="block text-sm font-medium text-text-primary mb-2">
+          Number of Days <span className="text-danger">*</span>
         </label>
         <div className="flex items-center">
           <button 
@@ -114,7 +114,7 @@ const TripForm = ({ onSubmit, isLoading }) => {
             min="1"
             max="14"
             required
-            className="h-10 w-20 text-center border-y-2 border-gray-300 focus:outline-none focus:border-accent"
+            className="h-10 w-20 text-center border-y-2 border-border focus:outline-none focus:border-accent bg-surface"
           />
           <button 
             type="button" 
@@ -123,13 +123,13 @@ const TripForm = ({ onSubmit, isLoading }) => {
           >
             +
           </button>
-          <span className="ml-3 text-gray-500 text-sm">(1-14 days)</span>
+          <span className="ml-3 text-text-secondary text-sm">(1-14 days)</span>
         </div>
       </div>
       
       <div className="mb-6">
-        <label className="block text-sm font-medium text-primary mb-2">
-          Trip Type <span className="text-red-500">*</span>
+        <label className="block text-sm font-medium text-text-primary mb-2">
+          Trip Type <span className="text-danger">*</span>
         </label>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
           {tripTypes.map((type) => (
@@ -137,9 +137,9 @@ const TripForm = ({ onSubmit, isLoading }) => {
               key={type.value}
               type="button"
               onClick={() => setFormData(prev => ({ ...prev, tripType: type.value }))}
-              className={`p-2 rounded-lg border-2 transition-all ${formData.tripType === type.value 
-                ? 'border-accent bg-accent/10 text-accent' 
-                : 'border-gray-200 hover:border-accent hover:bg-accent/10'}`}
+              className={`p-2 rounded-lg border-2 transition-all duration-300 transform hover:scale-105 ${formData.tripType === type.value 
+                ? 'border-accent bg-accent/10 text-accent shadow-soft' 
+                : 'border-border hover:border-accent hover:bg-accent/10 hover:shadow-soft'}`}
             >
               <div className="flex flex-col items-center justify-center">
                 <span className="text-2xl mb-1">{type.icon}</span>
