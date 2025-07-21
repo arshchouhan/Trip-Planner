@@ -48,11 +48,11 @@ const planTrip = async (req, res) => {
       // 2. Build location graph
       const locationGraph = graph.buildGraph(pointsOfInterest);
 
-      // 3. Optimize the route using the selected algorithm
-      const optimizedRoute = optimizer.optimizeTrip(locationGraph, days);
+      // 3. Optimize the route using the enhanced algorithm with trip type
+      const optimizedResult = optimizer.optimizeTrip(locationGraph, days, tripType);
 
       // 4. Return the optimized trip plan
-      console.log('Optimized route:', JSON.stringify(optimizedRoute, null, 2));
+      console.log('Optimization complete with metadata:', optimizedResult.metadata);
       
       return res.status(200).json({
         success: true,
@@ -60,7 +60,8 @@ const planTrip = async (req, res) => {
           destination,
           tripType,
           days,
-          itinerary: optimizedRoute,
+          itinerary: optimizedResult.dailyItineraries,
+          optimizationMetadata: optimizedResult.metadata
         },
       });
     } catch (innerError) {

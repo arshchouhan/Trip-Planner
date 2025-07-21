@@ -143,63 +143,137 @@ const getPOIs = async (destination, tripType, coordinates = null) => {
     // 2. Map trip type to OSM tags and keywords
     const osmParams = mapTripTypeToOsmTags(tripType);
     
-    // 3. Fetch POIs from Overpass API
-    // Construct a query to find POIs within ~5km radius
+    // 3. Fetch POIs from Overpass API using a more robust query format
     const radius = 5000; // 5 km radius
-    const response = await axios.get(
+    
+    // Create a more specific and robust Overpass query
+    const overpassQuery = `
+      [out:json][timeout:90];
+      (
+        // Primary search based on trip type tags
+        node[${osmParams.tags}](around:${radius},${location.lat},${location.lng});
+        way[${osmParams.tags}](around:${radius},${location.lat},${location.lng});
+        relation[${osmParams.tags}](around:${radius},${location.lat},${location.lng});
+        
+        // Additional searches for amenities
+        node[amenity~"${osmParams.amenities}"](around:${radius},${location.lat},${location.lng});
+        way[amenity~"${osmParams.amenities}"](around:${radius},${location.lat},${location.lng});
+        
+        // Tourism-related POIs (always useful)
+        node[tourism=attraction](around:${radius},${location.lat},${location.lng});
+        way[tourism=attraction](around:${radius},${location.lat},${location.lng});
+        
+        // Add specific keywords search for better results
+        ${osmParams.keywords.split(',').map(keyword => 
+          `node[name~"${keyword}",i](around:${radius},${location.lat},${location.lng});`
+        ).join('\n        ')}
+      );
+      out body;
+      >;
+      out skel qt;
+    `;
+    
+    console.log('Executing Overpass query:', overpassQuery);
+    
+    const response = await axios.post(
       'https://overpass-api.de/api/interpreter',
+      `data=${encodeURIComponent(overpassQuery)}`,
       {
-        params: {
-          data: `
-            [out:json];
-            (
-              // Search for POIs based on tags relevant to the trip type
-              node[${osmParams.tags}](around:${radius},${location.lat},${location.lng});
-              way[${osmParams.tags}](around:${radius},${location.lat},${location.lng});
-              relation[${osmParams.tags}](around:${radius},${location.lat},${location.lng});
-              // Additional searches for amenities
-              node[amenity~"${osmParams.amenities}"](around:${radius},${location.lat},${location.lng});
-              way[amenity~"${osmParams.amenities}"](around:${radius},${location.lat},${location.lng});
-            );
-            out body;
-            >;
-            out skel qt;
-          `
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
-        timeout: 30000
+        timeout: 60000 // Increased timeout for complex queries
       }
     );
     
-    // 4. Process and format results
+    // 4. Process and format results with improved filtering and scoring
     const pois = [];
     const usedNames = new Set(); // To avoid duplicate POIs
     let poiId = 1;
     
     if (response.data && response.data.elements) {
-      for (const element of response.data.elements) {
-        // Skip elements without tags or names
-        if (!element.tags || !element.tags.name) continue;
+      console.log(`Found ${response.data.elements.length} raw elements from Overpass API`);
+      
+      // First pass: collect all POIs with complete data
+      const validElements = response.data.elements.filter(element => {
+        // Must have tags and a name
+        if (!element.tags || !element.tags.name) return false;
+        
+        // Must have valid coordinates (either direct or center)
+        const hasValidCoords = 
+          (element.lat !== undefined && element.lon !== undefined) || 
+          (element.center && element.center.lat !== undefined && element.center.lon !== undefined);
+        
+        return hasValidCoords;
+      });
+      
+      console.log(`Found ${validElements.length} elements with valid data`);
+      
+      // Second pass: score and rank POIs by relevance to trip type
+      const scoredElements = validElements.map(element => {
+        // Calculate a relevance score based on tags matching trip type
+        let relevanceScore = 0;
+        
+        // Check if name contains any keywords related to trip type
+        const keywords = osmParams.keywords.split(',');
+        const name = element.tags.name.toLowerCase();
+        
+        for (const keyword of keywords) {
+          if (name.includes(keyword.toLowerCase())) {
+            relevanceScore += 5; // Strong boost for keyword in name
+          }
+        }
+        
+        // Check for relevant tags
+        if (element.tags.tourism) relevanceScore += 3;
+        if (element.tags.historic) relevanceScore += (tripType === 'Historical' ? 5 : 2);
+        if (element.tags.natural) relevanceScore += (tripType === 'Nature' ? 5 : 2);
+        if (element.tags.leisure) relevanceScore += 2;
+        if (element.tags.amenity === 'place_of_worship') relevanceScore += (tripType === 'Religious' ? 5 : 1);
+        
+        // Add rating based on OSM data if available
+        const rating = element.tags.rating || element.tags.stars || 
+                      (Math.random() * (4.8 - 3.8) + 3.8).toFixed(1);
+        
+        return {
+          element,
+          relevanceScore,
+          rating
+        };
+      });
+      
+      // Sort by relevance score (highest first)
+      scoredElements.sort((a, b) => b.relevanceScore - a.relevanceScore);
+      
+      // Take the top results and format them as POIs
+      for (const scoredElement of scoredElements) {
+        const element = scoredElement.element;
         
         // Skip duplicates
         if (usedNames.has(element.tags.name)) continue;
         usedNames.add(element.tags.name);
         
-        // Format POI
+        // Get coordinates
+        const lat = element.lat || (element.center ? element.center.lat : null);
+        const lng = element.lon || (element.center ? element.center.lon : null);
+        
+        // Format POI with additional metadata
         pois.push({
           id: `poi_${poiId++}`,
           name: element.tags.name,
-          location: {
-            lat: element.lat || (element.center ? element.center.lat : null),
-            lng: element.lon || (element.center ? element.center.lon : null)
-          },
-          // Estimate visit duration based on the POI type (just a rough estimate)
+          location: { lat, lng },
           visitDuration: estimateVisitDuration(element.tags, tripType),
-          // Assign a random rating between 3.8-4.8 for now
-          rating: (Math.random() * (4.8 - 3.8) + 3.8).toFixed(1)
+          rating: scoredElement.rating,
+          relevanceScore: scoredElement.relevanceScore,
+          // Include additional metadata if available
+          description: element.tags.description || element.tags.tourism || element.tags.historic || '',
+          website: element.tags.website || element.tags['contact:website'] || '',
+          openingHours: element.tags.opening_hours || '',
+          osmId: element.id
         });
         
-        // Limit to max 15 POIs to avoid too much computation
-        if (pois.length >= 15) break;
+        // Limit to max 20 POIs to avoid too much computation but ensure good coverage
+        if (pois.length >= 20) break;
       }
     }
     
@@ -210,51 +284,98 @@ const getPOIs = async (destination, tripType, coordinates = null) => {
       throw new Error(`No POIs found for ${destination}`);
     } 
     
-    // Even if we found just 1 or 2 POIs, use them rather than falling back
-    if (pois.length < 3) {
+    // Even if we found just a few POIs, use them rather than falling back
+    if (pois.length < 5) {
       console.log(`Only found ${pois.length} POIs for ${destination} (${tripType}), but proceeding with these.`);
     }
     
-    console.log(`Found ${pois.length} POIs for ${destination} (${tripType})`);
+    console.log(`Successfully processed ${pois.length} POIs for ${destination} (${tripType})`);
     return pois;
   } catch (error) {
     console.error('Error getting POIs from OpenStreetMap:', error.message);
     console.error('Attempting to retry with simplified query...');
     
     try {
-      // Try a simpler query as a fallback
-      const simpleResponse = await axios.get(
+      // Try a more robust fallback query using POST method
+      // This avoids URL length limitations and improves reliability
+      const fallbackQuery = `
+        [out:json][timeout:60];
+        (
+          // Simplified search for tourism attractions and key amenities
+          node[tourism=attraction](around:10000,${location?.lat || 0},${location?.lng || 0});
+          way[tourism=attraction](around:10000,${location?.lat || 0},${location?.lng || 0});
+          node[tourism=museum](around:10000,${location?.lat || 0},${location?.lng || 0});
+          node[tourism=viewpoint](around:10000,${location?.lat || 0},${location?.lng || 0});
+          node[historic](around:10000,${location?.lat || 0},${location?.lng || 0});
+          node[amenity=place_of_worship](around:10000,${location?.lat || 0},${location?.lng || 0});
+          node[amenity=restaurant](around:10000,${location?.lat || 0},${location?.lng || 0});
+          node[leisure=park](around:10000,${location?.lat || 0},${location?.lng || 0});
+        );
+        out body;
+        >;
+        out skel qt;
+      `;
+      
+      console.log('Executing fallback Overpass query:', fallbackQuery);
+      
+      const simpleResponse = await axios.post(
         'https://overpass-api.de/api/interpreter',
+        `data=${encodeURIComponent(fallbackQuery)}`,
         {
-          params: {
-            data: `
-              [out:json];
-              // Simpler query just looking for tourism and amenities
-              (
-                node[tourism](around:8000,${location.lat},${location.lng});
-                way[tourism](around:8000,${location.lat},${location.lng});
-                node[amenity~"restaurant|cafe|place_of_worship"](around:8000,${location.lat},${location.lng});
-              );
-              out body;
-              >;
-              out skel qt;
-            `
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
           },
-          timeout: 30000
+          timeout: 45000
         }
       );
-
-      const simplePois = [];
+      
+      // Process results with improved scoring
+      const fallbackPois = [];
       const usedNames = new Set();
       let poiId = 1;
       
       if (simpleResponse.data && simpleResponse.data.elements) {
-        for (const element of simpleResponse.data.elements) {
-          if (!element.tags || !element.tags.name) continue;
-          if (usedNames.has(element.tags.name)) continue;
+        console.log(`Found ${simpleResponse.data.elements.length} elements in fallback query`);
+        
+        // Filter valid elements
+        const validElements = simpleResponse.data.elements.filter(element => {
+          if (!element.tags || !element.tags.name) return false;
           
+          const hasValidCoords = 
+            (element.lat !== undefined && element.lon !== undefined) || 
+            (element.center && element.center.lat !== undefined && element.center.lon !== undefined);
+          
+          return hasValidCoords;
+        });
+        
+        // Score elements by relevance
+        const scoredElements = validElements.map(element => {
+          let score = 0;
+          
+          // Prioritize elements with more complete data
+          if (element.tags.name) score += 2;
+          if (element.tags.description) score += 1;
+          if (element.tags.website) score += 1;
+          
+          // Prioritize by type
+          if (element.tags.tourism === 'attraction') score += 3;
+          if (element.tags.historic) score += 2;
+          if (element.tags.amenity) score += 1;
+          
+          return { element, score };
+        });
+        
+        // Sort by score
+        scoredElements.sort((a, b) => b.score - a.score);
+        
+        // Take top results
+        for (const scored of scoredElements) {
+          const element = scored.element;
+          
+          if (usedNames.has(element.tags.name)) continue;
           usedNames.add(element.tags.name);
-          simplePois.push({
+          
+          fallbackPois.push({
             id: `poi_${poiId++}`,
             name: element.tags.name,
             location: {
@@ -262,79 +383,105 @@ const getPOIs = async (destination, tripType, coordinates = null) => {
               lng: element.lon || (element.center ? element.center.lon : null)
             },
             visitDuration: estimateVisitDuration(element.tags, tripType),
-            rating: (Math.random() * (4.8 - 3.8) + 3.8).toFixed(1)
+            rating: element.tags.stars || (Math.random() * (4.8 - 3.8) + 3.8).toFixed(1),
+            description: element.tags.description || element.tags.tourism || element.tags.historic || '',
+            relevanceScore: scored.score,
+            isFallback: true // Mark as fallback POI
           });
           
-          if (simplePois.length >= 10) break;
+          if (fallbackPois.length >= 15) break;
         }
       }
       
-      // If we found some POIs with the simple query, use those instead of fallback
-      if (simplePois.length > 0) {
-        console.log(`Found ${simplePois.length} POIs using simplified query for ${destination}`);
-        return simplePois;
+      if (fallbackPois.length > 0) {
+        console.log(`Found ${fallbackPois.length} POIs in fallback query for ${destination}`);
+        return fallbackPois;
       }
-    } catch (retryError) {
-      console.error('Retry also failed:', retryError.message);
-    }
-    
-    // Only use emergency backup POIs if all else fails
-    console.log('All attempts to get POIs failed. Using emergency backup POIs.');
-    
-    // Get coordinates based on destination name, or use provided location, or fall back to default
-    let baseLat, baseLng;
-    
-    // Try to find the destination in our common destinations list
-    const destinationLower = destination.toLowerCase();
-    const knownDestination = Object.keys(commonDestinations).find(key => 
-      destinationLower.includes(key) || key.includes(destinationLower)
-    );
-    
-    // Use coordinates from commonDestinations if found, otherwise use provided location or default
-    if (knownDestination) {
-      console.log(`Found known destination match: ${knownDestination}`);
-      baseLat = commonDestinations[knownDestination].lat;
-      baseLng = commonDestinations[knownDestination].lng;
-    } else if (location && typeof location.lat === 'number' && typeof location.lng === 'number') {
-      baseLat = location.lat;
-      baseLng = location.lng;
-    } else {
-      console.log('No matching destination found, using default India coordinates');
-      baseLat = commonDestinations.default.lat;
-      baseLng = commonDestinations.default.lng;
-    }
-    
-    console.log('Using emergency backup POIs with base coordinates:', { baseLat, baseLng });
-    
-    // Get POI names based on trip type
-    const poiTypes = {
-      'Historical': ['Historical Fort', 'Ancient Temple', 'Heritage Museum', 'Old Palace', 'Monument'],
-      'Religious': ['Temple', 'Shrine', 'Sacred Site', 'Holy River', 'Pilgrimage Center'],
-      'Nature': ['National Park', 'Garden', 'Waterfall', 'Mountain Peak', 'Lake'],
-      'Adventure': ['Trekking Trail', 'Camping Site', 'Zipline Adventure', 'Adventure Park', 'Wildlife Safari'],
-      'Romantic': ['Sunset Point', 'Lakeside Retreat', 'Garden Restaurant', 'Scenic Viewpoint', 'Couples Park']
-    };
-    
-    // Default to Historical if no match
-    const poiNames = poiTypes[tripType] || poiTypes['Historical'];
-    
-    // Create POIs with the appropriate names and coordinates
-    return poiNames.map((poiName, index) => {
-      // Add some variability to coordinates so they're not all on top of each other
-      const latOffset = (index - 2) * 0.002;
-      const lngOffset = (index - 2) * 0.003;
       
-      return {
-        id: `poi_${index + 1}`,
-        name: `${poiName} in ${destination}`,
-        location: {
-          lat: baseLat + latOffset,
-          lng: baseLng + lngOffset
-        },
-        visitDuration: 1.5 + (Math.random() * 1.5),
-        rating: (Math.random() * (4.8 - 4.2) + 4.2).toFixed(1)
+      throw new Error('Fallback query also failed to find POIs');
+    } catch (fallbackError) {
+      console.error('Fallback query failed:', fallbackError.message);
+      console.warn('Using emergency backup POIs with destination coordinates');
+    
+      // Use emergency backup POIs with the destination coordinates
+      // This ensures we always return something usable
+      const backupCoords = location || {
+        lat: commonDestinations[destination.toLowerCase()]?.lat || commonDestinations.default.lat,
+        lng: commonDestinations[destination.toLowerCase()]?.lng || commonDestinations.default.lng
       };
-    });
+      
+      // Create more realistic backup POIs based on trip type
+      const backupPois = [];
+      
+      // Define backup POI templates by trip type
+      const poiTemplates = {
+        'Historical': [
+          { name: 'Historical Museum', duration: 2.5 },
+          { name: 'Ancient Fort', duration: 2 },
+          { name: 'Heritage Palace', duration: 2 },
+          { name: 'Old Town Square', duration: 1.5 },
+          { name: 'Historical Monument', duration: 1 },
+          { name: 'Archaeological Site', duration: 2.5 }
+        ],
+        'Religious': [
+          { name: 'Grand Temple', duration: 1.5 },
+          { name: 'Sacred Shrine', duration: 1 },
+          { name: 'Holy Site', duration: 1.5 },
+          { name: 'Ancient Monastery', duration: 2 },
+          { name: 'Pilgrimage Center', duration: 2 }
+        ],
+        'Nature': [
+          { name: 'National Park', duration: 3 },
+          { name: 'Botanical Garden', duration: 2 },
+          { name: 'Scenic Waterfall', duration: 1.5 },
+          { name: 'Mountain Viewpoint', duration: 2 },
+          { name: 'Nature Reserve', duration: 2.5 }
+        ],
+        'Adventure': [
+          { name: 'Adventure Park', duration: 3 },
+          { name: 'Hiking Trail', duration: 3.5 },
+          { name: 'Zipline Experience', duration: 2 },
+          { name: 'Rock Climbing Site', duration: 2.5 },
+          { name: 'Water Sports Center', duration: 3 }
+        ],
+        'Romantic': [
+          { name: 'Sunset Point', duration: 1.5 },
+          { name: 'Lakeside Retreat', duration: 2 },
+          { name: 'Garden Restaurant', duration: 2 },
+          { name: 'Scenic Viewpoint', duration: 1 },
+          { name: 'Couples Park', duration: 1.5 }
+        ]
+      };
+      
+      // Use the appropriate template or default to Historical
+      const templates = poiTemplates[tripType] || poiTemplates['Historical'];
+      
+      // Create POIs with realistic offsets from the destination
+      templates.forEach((template, index) => {
+        // Create a more realistic distribution of POIs around the destination
+        // Using a spiral pattern for better distribution
+        const angle = index * (Math.PI / 2.5); // Distribute in a spiral
+        const distance = 0.002 + (index * 0.001); // Increasing distance from center
+        const latOffset = Math.cos(angle) * distance;
+        const lngOffset = Math.sin(angle) * distance;
+        
+        backupPois.push({
+          id: `poi_${index + 1}`,
+          name: `${template.name} of ${destination}`,
+          location: {
+            lat: backupCoords.lat + latOffset,
+            lng: backupCoords.lng + lngOffset
+          },
+          visitDuration: template.duration,
+          rating: (Math.random() * (4.8 - 4.2) + 4.2).toFixed(1),
+          description: `A popular ${tripType.toLowerCase()} attraction in ${destination}`,
+          isEmergencyBackup: true // Mark as emergency backup
+        });
+      });
+      
+      console.log(`Created ${backupPois.length} emergency backup POIs for ${destination}`);
+      return backupPois;
+    }
   }
 };
 
